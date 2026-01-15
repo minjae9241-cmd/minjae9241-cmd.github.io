@@ -698,18 +698,44 @@
             const newName = prompt(`'${currentName}' 학생의 이름을 무엇으로 수정하시겠습니까?`, currentName);
 
             if (newName !== null && newName.trim() !== "") {
-                list[index] = newName.trim();
+                const trimmedNewName = newName.trim();
+
+                // 1. 전체 명단 업데이트
+                list[index] = trimmedNewName;
                 DB.saveStudents(list);
+
+                // 2. 자리 배치 데이터 업데이트
+                const seats = DB.getSeats();
+                // seats 배열에 있는 currentName을 모두 trimmedNewName으로 변경
+                const updatedSeats = seats.map(name => name === currentName ? trimmedNewName : name);
+                DB.saveSeats(updatedSeats);
+
+                // 3. UI 갱신
                 loadStudents();
+                loadSeats(); // 자리 배치도 즉시 갱신
             }
         }
 
         function deleteStudent(index) {
             if (!confirm("삭제하시겠습니까?")) return;
+
             const list = DB.getStudents();
+            const targetName = list[index]; // 삭제될 학생 이름
+
+            // 1. 전체 명단에서 삭제
             list.splice(index, 1);
             DB.saveStudents(list);
+
+            // 2. 자리 배치 데이터에서 삭제 (해당 학생 자리 비우기 or 당기기? -> 당기기는 자리 망가지므로 그냥 배열에서 제거해서 재배치 유도? 
+            // 보통 자리배치에서 학생이 사라지면 그 자리는 공석이 되거나 배열에서 빠짐.
+            // 여기서는 seats 배열에서 해당 이름을 제거함.
+            const seats = DB.getSeats();
+            const updatedSeats = seats.filter(name => name !== targetName);
+            DB.saveSeats(updatedSeats);
+
+            // 3. UI 갱신
             loadStudents();
+            loadSeats();
         }
 
         function loadSeats() {
@@ -724,25 +750,42 @@
 
             // 2명씩 짝지어서 3분단으로 배치 (총 3개의 큰 컬럼)
             // seats 배열을 앞에서부터 2개씩 묶어서 seat-group으로 만듦
+            const globalStudents = DB.getStudents(); // 전체 명단 가져오기 (인덱스 찾기용)
+
             for (let i = 0; i < seats.length; i += 2) {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'seat-group';
 
                 // 첫 번째 자리
+                const name1 = seats[i];
+                const realIndex1 = globalStudents.indexOf(name1);
                 const seat1 = document.createElement('div');
                 seat1.className = 'seat-item';
-                seat1.innerText = seats[i];
+                seat1.style.flexDirection = 'column'; // 버튼 배치를 위해 컬럼 방향
+                seat1.innerHTML = `
+                    <span style="cursor:pointer;" onclick="editStudent(${realIndex1})">${name1}</span>
+                    <div style="margin-top:5px; display:flex; gap:3px;">
+                        <button class="action-btn" style="font-size:0.8rem; padding:2px 5px;" onclick="editStudent(${realIndex1})">수정</button>
+                        <button class="delete-btn" style="font-size:0.8rem; padding:2px 5px;" onclick="deleteStudent(${realIndex1})">삭제</button>
+                    </div>
+                `;
                 groupDiv.appendChild(seat1);
 
                 // 두 번째 자리 (있으면)
                 if (i + 1 < seats.length) {
+                    const name2 = seats[i + 1];
+                    const realIndex2 = globalStudents.indexOf(name2);
                     const seat2 = document.createElement('div');
                     seat2.className = 'seat-item';
-                    seat2.innerText = seats[i + 1];
+                    seat2.style.flexDirection = 'column';
+                    seat2.innerHTML = `
+                        <span style="cursor:pointer;" onclick="editStudent(${realIndex2})">${name2}</span>
+                        <div style="margin-top:5px; display:flex; gap:3px;">
+                            <button class="action-btn" style="font-size:0.8rem; padding:2px 5px;" onclick="editStudent(${realIndex2})">수정</button>
+                            <button class="delete-btn" style="font-size:0.8rem; padding:2px 5px;" onclick="deleteStudent(${realIndex2})">삭제</button>
+                        </div>
+                    `;
                     groupDiv.appendChild(seat2);
-                } else {
-                    // 홀수라서 짝이 없는 경우 빈 박스? 아니면 그냥 비움.
-                    // 모양 유지를 위해 빈 투명 박스 추가 가능하나, 일단 비워둠.
                 }
 
                 container.appendChild(groupDiv);
