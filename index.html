@@ -695,7 +695,7 @@
         function editStudent(index) {
             const list = DB.getStudents();
             const currentName = list[index];
-            const newName = prompt("학생 이름을 수정하세요:", currentName);
+            const newName = prompt(`'${currentName}' 학생의 이름을 무엇으로 수정하시겠습니까?`, currentName);
 
             if (newName !== null && newName.trim() !== "") {
                 list[index] = newName.trim();
