@@ -670,8 +670,11 @@
                 const item = document.createElement('div');
                 item.className = 'list-item';
                 item.innerHTML = `
-                    <span>${index + 1}. ${name}</span>
-                    <button class="delete-btn" onclick="deleteStudent(${index})">삭제</button>
+                    <span onclick="editStudent(${index})" style="cursor:pointer;">${index + 1}. ${name}</span>
+                    <div style="display:flex; gap: 5px;">
+                        <button class="action-btn" style="padding: 5px 10px; font-size: 0.9rem; background-color: #2196F3; color: white;" onclick="editStudent(${index})">수정</button>
+                        <button class="delete-btn" onclick="deleteStudent(${index})">삭제</button>
+                    </div>
                 `;
                 container.appendChild(item);
             });
@@ -687,6 +690,18 @@
             DB.saveStudents(list);
             input.value = '';
             loadStudents();
+        }
+
+        function editStudent(index) {
+            const list = DB.getStudents();
+            const currentName = list[index];
+            const newName = prompt("학생 이름을 수정하세요:", currentName);
+
+            if (newName !== null && newName.trim() !== "") {
+                list[index] = newName.trim();
+                DB.saveStudents(list);
+                loadStudents();
+            }
         }
 
         function deleteStudent(index) {
