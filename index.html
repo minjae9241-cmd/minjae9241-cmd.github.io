@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>초등학급 경영 도우미</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <style>
+        /* --- 초기화 및 기본 스타일 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Jua', sans-serif;
+            background-color: #FFFDE7; /* 귀여운 노랑 */
+            color: #5D4037;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            text-align: center;
+            color: #5D4037;
+            text-shadow: 2px 2px 0px #FFF9C4;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #5D4037;
+            margin-bottom: 15px;
+            border-bottom: 3px dashed #FBC02D;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        button {
+            font-family: 'Jua', sans-serif;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        /* --- 공통 컴포넌트 스타일 --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .home-btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .home-btn {
+            width: 300px;
+            height: 250px;
+            background-color: #FFFFFF;
+            border: 4px solid #FBC02D;
+            border-radius: 30px;
+            box-shadow: 5px 5px 0px 0px #F9A825;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.2s, background-color 0.2s;
+            padding: 20px;
+        }
+
+        .home-btn:hover {
+            transform: scale(1.03);
+            background-color: #FFF9C4;
+        }
+
+        .home-btn-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3E2723;
+        }
+
+        .home-btn-desc {
+            font-size: 1.2rem;
+            color: #5D4037;
+            line-height: 1.4;
+        }
+
+        .nav-btn {
+            background-color: #fff;
+            border: 2px solid #FBC02D;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            box-shadow: 2px 2px 0 #F9A825;
+        }
+        
+        .nav-btn:hover {
+            background-color: #FFF9C4;
+        }
+
+        /* 입력 폼 스타일 */
+        input[type="text"], input[type="date"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 3px solid #FBC02D;
+            border-radius: 15px;
+            font-family: 'Jua', sans-serif;
+            font-size: 1rem;
+            background-color: #FFFFFF;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #F57F17;
+        }
+
+        button.action-btn {
+            background-color: #FBC02D;
+            color: #3E2723;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            box-shadow: 2px 2px 0 #F57F17;
+        }
+        
+        button.action-btn:hover {
+            background-color: #F9A825;
+            color: #fff;
+        }
+
+        button.delete-btn {
+            background-color: #FFCCBC;
+            border: 2px solid #FF5722;
+            color: #BF360C;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* --- 페이지별 스타일 --- */
+        .page {
+            display: none; /* 기본적으로 숨김 */
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* 오늘의 우리반 카드 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-4 { grid-template-columns: 1fr 1fr; }
+        }
+
+        .info-card {
+            background-color: #f0f2f6;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid;
+            min-height: 150px;
+            white-space: pre-wrap; /* 줄바꿈 적용 */
+        }
+
+        .card-red { border-left-color: #ff4b4b; }
+        .card-green { border-left-color: #4caf50; }
+        .card-orange { border-left-color: #ff9800; }
+        .card-blue { border-left-color: #2196f3; }
+
+        .info-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* 탭 스타일 */
+        .tab-menu {
+            display: flex;
+            border-bottom: 3px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            font-size: 1.2rem;
+            color: #888;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+        
+        .tab-btn.active-tab {
+            color: #5D4037;
+            border-bottom-color: #FBC02D;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active-content {
+            display: block;
+        }
+
+        /* 리스트 아이템 */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        /* 자리 배치 그리드 */
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .seat-item {
+            padding: 20px 5px;
+            background-color: #e3f2fd;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #90caf9;
+            font-weight: bold;
+        }
+
+        /* 성장 일지 */
+        .log-item {
+            background-color: #fff;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .log-date {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .log-author {
+            font-weight: bold;
+            color: #3E2723;
+        }
+        
+        .teacher-comment-box {
+            background-color: #E8F5E9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 헤더 / 타이틀 -->
+        <h1 id="main-title">🍠 군고구마반의 행복한 하루하루 🍠</h1>
+        
+        <!-- 네비게이션 (홈에서는 숨김) -->
+        <div id="navigation" style="display:none;">
+            <button class="nav-btn" onclick="goHome()">🏠 홈으로 가기</button>
+            <hr style="border: 0; border-top: 2px dashed #ddd; margin: 15px 0;">
+        </div>
+
+        <!-- 1. 메인 홈 화면 -->
+        <div id="page-home" class="page active">
+            <div class="home-btn-group">
+                <button class="home-btn" onclick="goToPage('today')">
+                    <div class="home-btn-title">🏫 오늘의 우리반</div>
+                    <div class="home-btn-desc">일정, 급식, 알림장</div>
+                </button>
+                <button class="home-btn" onclick="goToPage('management')">
+                    <div class="home-btn-title">📋 이 달의 우리반</div>
+                    <div class="home-btn-desc">학생 명단, 자리 배치</div>
+                </button>
+                <button class="home-btn" onclick="goToPage('growth')">
+                    <div class="home-btn-title">🌱 성장 일지</div>
+                    <div class="home-btn-desc">하루 기록, 선생님 응원</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. 오늘의 우리반 화면 -->
+        <div id="page-today" class="page">
+            <h2>🏫 오늘의 우리반</h2>
+            
+            <div style="margin-bottom: 20px; text-align: center;">
+                <label style="font-size: 1.2rem; margin-right: 10px;">📅 날짜 선택:</label>
+                <input type="date" id="daily-date-picker" style="width: auto;" onchange="loadDailyLog()">
+            </div>
+
+            <details open style="margin-bottom: 30px; background-color: #fff; padding: 20px; border-radius: 15px; border: 2px solid #FBC02D;">
+                <summary style="font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #F57F17; margin-bottom: 10px;">📝 선생님 기록장 (클릭하여 열기/접기)</summary>
+                <div class="grid-2">
+                    <div>
+                        <label>🕒 학급 일과</label>
+                        <textarea id="input-schedule" rows="4"></textarea>
+                    </div>
+                    <div>
+                        <label>🍱 오늘의 급식</label>
+                        <textarea id="input-lunch" rows="4"></textarea>
+                    </div>
+                    <div>
+                        <label>✅ 꼭 해야 할 일</label>
+                        <textarea id="input-todo" rows="4"></textarea>
+                    </div>
+                    <div>
+                        <label>🎒 준비물</label>
+                        <textarea id="input-supplies" rows="4"></textarea>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <button class="action-btn" onclick="saveDailyLog()">저장하기</button>
+                </div>
+            </details>
+
+            <div id="daily-display-area">
+                <h3 id="daily-display-title" style="text-align: center; margin-bottom: 20px;"></h3>
+                <div class="grid-4" id="daily-cards">
+                    <!-- 카드 내용이 JS로 들어감 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 이 달의 우리반 화면 -->
+        <div id="page-management" class="page">
+            <h2>📋 이 달의 우리반</h2>
+            
+            <div class="tab-menu">
+                <button class="tab-btn active-tab" onclick="openTab('tab-students')">👨‍🎓 학생 명단</button>
+                <button class="tab-btn" onclick="openTab('tab-seats')">🪑 자리 배치</button>
+            </div>
+
+            <!-- 탭 1: 학생 명단 -->
+            <div id="tab-students" class="tab-content active-content">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="new-student-name" placeholder="학생 이름 입력" style="flex: 1; margin-bottom: 0;">
+                    <button class="action-btn" onclick="addStudent()">추가</button>
+                </div>
+                <div id="student-list">
+                    <!-- 학생 목록 렌더링 -->
+                </div>
+            </div>
+
+            <!-- 탭 2: 자리 배치 -->
+            <div id="tab-seats" class="tab-content">
+                <div style="margin-bottom: 20px;">
+                    <button class="action-btn" onclick="shuffleSeats()">🎲 자리 배치하기</button>
+                    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">* 학생 명단에 있는 친구들을 무작위로 섞습니다.</p>
+                </div>
+                <div id="seat-container" class="seat-grid">
+                    <!-- 자리 배치 렌더링 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 성장 일지 화면 -->
+        <div id="page-growth" class="page">
+            <h2>🌱 성장 일지</h2>
+
+            <div style="text-align: center; margin-bottom: 20px;">
+                <label>
+                    <input type="radio" name="user-mode" value="student" checked onchange="toggleGrowthMode()"> 👦 학생용
+                </label>
+                <label style="margin-left: 20px;">
+                    <input type="radio" name="user-mode" value="teacher" onchange="toggleGrowthMode()"> 👩‍🏫 교사용
+                </label>
+            </div>
+            <hr style="margin-bottom: 20px; border-color: #eee;">
+
+            <!-- 학생 모드 -->
+            <div id="growth-student-mode">
+                <h3>📝 나의 하루 기록하기</h3>
+                <input type="text" id="growth-student-name" placeholder="이름을 입력하세요">
+                <textarea id="growth-content" rows="4" placeholder="오늘 있었던 특별한 일이나 배운 점을 기록해보세요."></textarea>
+                <button class="action-btn" onclick="addGrowthLog()">일기 저장하기</button>
+
+                <div style="margin-top: 40px;">
+                    <h3>📂 내가 쓴 글 확인</h3>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="growth-search-name" placeholder="이름 입력 후 조회" style="margin-bottom:0; width: 200px;">
+                        <button class="action-btn" onclick="loadStudentLogs()">조회</button>
+                    </div>
+                    <div id="my-logs-container" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+
+            <!-- 교사 모드 -->
+            <div id="growth-teacher-mode" style="display: none;">
+                <h3>👨‍🏫 우리반 친구들의 이야기</h3>
+                <div id="all-logs-container"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 데이터 관리 (LocalStorage) ---
+        const DB = {
+            // 일일 기록
+            getDailyLog: (date) => JSON.parse(localStorage.getItem(`daily_${date}`) || 'null'),
+            saveDailyLog: (date, data) => localStorage.setItem(`daily_${date}`, JSON.stringify(data)),
+            
+            // 학생 명단 (단순 배열)
+            getStudents: () => JSON.parse(localStorage.getItem('students') || '[]'),
+            saveStudents: (list) => localStorage.setItem('students', JSON.stringify(list)),
+            
+            // 자리 배치
+            getSeats: () => JSON.parse(localStorage.getItem('seats') || '[]'),
+            saveSeats: (list) => localStorage.setItem('seats', JSON.stringify(list)),
+
+            // 성장 일지 ({id, date, name, content, comment, timestamp})
+            getGrowthLogs: () => JSON.parse(localStorage.getItem('growth_logs') || '[]'),
+            saveGrowthLogs: (logs) => localStorage.setItem('growth_logs', JSON.stringify(logs))
+        };
+
+        // --- 네비게이션 ---
+        function goHome() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-home').classList.add('active');
+            document.getElementById('navigation').style.display = 'none';
+            document.getElementById('main-title').innerText = "🍠 군고구마반의 행복한 하루하루 🍠";
+        }
+
+        function goToPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pageName}`).classList.add('active');
+            document.getElementById('navigation').style.display = 'block';
+
+            // 페이지별 초기화 로직
+            if(pageName === 'today') {
+                document.getElementById('daily-date-picker').valueAsDate = new Date();
+                loadDailyLog();
+            } else if (pageName === 'management') {
+                loadStudents();
+                loadSeats();
+            }
+        }
+
+        // --- 기능: 오늘의 우리반 ---
+        function loadDailyLog() {
+            const date = document.getElementById('daily-date-picker').value;
+            const data = DB.getDailyLog(date);
+            const container = document.getElementById('daily-cards');
+            const title = document.getElementById('daily-display-title');
+            
+            // 입력창 채우기
+            document.getElementById('input-schedule').value = data ? data.schedule : "";
+            document.getElementById('input-lunch').value = data ? data.lunch : "";
+            document.getElementById('input-todo').value = data ? data.todo : "";
+            document.getElementById('input-supplies').value = data ? data.supplies : "";
+
+            // 디스플레이 영역 업데이트
+            title.innerText = `📅 ${date} 알림장`;
+            
+            if (data) {
+                container.innerHTML = `
+                    <div class="info-card card-red"><span class="info-title">🕒 학급 일과</span>${formatText(data.schedule)}</div>
+                    <div class="info-card card-green"><span class="info-title">🍱 오늘의 급식</span>${formatText(data.lunch)}</div>
+                    <div class="info-card card-orange"><span class="info-title">✅ 꼭 해야 할 일</span>${formatText(data.todo)}</div>
+                    <div class="info-card card-blue"><span class="info-title">🎒 준비물</span>${formatText(data.supplies)}</div>
+                `;
+            } else {
+                container.innerHTML = `<div style="grid-column: span 4; text-align: center; color: #888; padding: 20px;">📝 아직 등록된 내용이 없습니다. 위에서 입력해주세요.</div>`;
+            }
+        }
+
+        function saveDailyLog() {
+            const date = document.getElementById('daily-date-picker').value;
+            if (!date) return alert("날짜를 선택해주세요.");
+
+            const data = {
+                schedule: document.getElementById('input-schedule').value,
+                lunch: document.getElementById('input-lunch').value,
+                todo: document.getElementById('input-todo').value,
+                supplies: document.getElementById('input-supplies').value
+            };
+            
+            DB.saveDailyLog(date, data);
+            alert("저장되었습니다!");
+            loadDailyLog();
+        }
+
+        function formatText(text) {
+            return text ? text.replace(/\n/g, '<br>') : '-';
+        }
+
+        // --- 기능: 이 달의 우리반 ---
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+            
+            document.getElementById(tabId).classList.add('active-content');
+            event.target.classList.add('active-tab');
+        }
+
+        function loadStudents() {
+            const list = DB.getStudents();
+            const container = document.getElementById('student-list');
+            container.innerHTML = list.length === 0 ? '<p style="text-align:center; color:#999;">등록된 학생이 없습니다.</p>' : '';
+            
+            list.forEach((name, index) => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <span>${index + 1}. ${name}</span>
+                    <button class="delete-btn" onclick="deleteStudent(${index})">삭제</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function addStudent() {
+            const input = document.getElementById('new-student-name');
+            const name = input.value.trim();
+            if(!name) return;
+            
+            const list = DB.getStudents();
+            list.push(name);
+            DB.saveStudents(list);
+            input.value = '';
+            loadStudents();
+        }
+
+        function deleteStudent(index) {
+            if(!confirm("삭제하시겠습니까?")) return;
+            const list = DB.getStudents();
+            list.splice(index, 1);
+            DB.saveStudents(list);
+            loadStudents();
+        }
+
+        function loadSeats() {
+            const seats = DB.getSeats();
+            const container = document.getElementById('seat-container');
+            container.innerHTML = '';
+            
+            if (seats.length === 0) {
+                container.innerHTML = '<div style="grid-column: span 6; text-align:center; color:#999;">아직 자리 배치가 되지 않았습니다.</div>';
+                return;
+            }
+
+            seats.forEach(name => {
+                const div = document.createElement('div');
+                div.className = 'seat-item';
+                div.innerText = name;
+                container.appendChild(div);
+            });
+        }
+
+        function shuffleSeats() {
+            const students = DB.getStudents();
+            if (students.length === 0) return alert("학생 명단을 먼저 등록해주세요!");
+            
+            // 배열 섞기 (Fisher-Yates shuffle)
+            const shuffled = [...students];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            DB.saveSeats(shuffled);
+            loadSeats();
+            alert("자리가 섞였습니다!");
+        }
+
+        // --- 기능: 성장 일지 ---
+        function toggleGrowthMode() {
+            const mode = document.querySelector('input[name="user-mode"]:checked').value;
+            if (mode === 'student') {
+                document.getElementById('growth-student-mode').style.display = 'block';
+                document.getElementById('growth-teacher-mode').style.display = 'none';
+                
+                // 학생 이름 기억하기 불러오기
+                const savedName = localStorage.getItem('last_student_name');
+                if(savedName) document.getElementById('growth-student-name').value = savedName;
+                document.getElementById('growth-search-name').value = savedName || '';
+                
+            } else {
+                document.getElementById('growth-student-mode').style.display = 'none';
+                document.getElementById('growth-teacher-mode').style.display = 'block';
+                loadAllLogsForTeacher();
+            }
+        }
+
+        function addGrowthLog() {
+            const name = document.getElementById('growth-student-name').value.trim();
+            const content = document.getElementById('growth-content').value.trim();
+            
+            if (!name || !content) return alert("이름과 내용을 모두 입력해주세요.");
+
+            const logs = DB.getGrowthLogs();
+            const newLog = {
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                name: name,
+                content: content,
+                comment: ""
+            };
+            
+            logs.unshift(newLog); // 최신순
+            DB.saveGrowthLogs(logs);
+            
+            // 이름 기억
+            localStorage.setItem('last_student_name', name);
+            document.getElementById('growth-content').value = '';
+            alert("저장되었습니다!");
+            
+            // 바로 내 글 조회 갱신
+            document.getElementById('growth-search-name').value = name;
+            loadStudentLogs();
+        }
+
+        function loadStudentLogs() {
+            const name = document.getElementById('growth-search-name').value.trim();
+            if(!name) return alert("이름을 입력해주세요.");
+            
+            const logs = DB.getGrowthLogs().filter(log => log.name === name);
+            const container = document.getElementById('my-logs-container');
+            container.innerHTML = logs.length ? '' : '<p>작성된 기록이 없습니다.</p>';
+            
+            logs.forEach(log => {
+                container.innerHTML += `
+                    <div class="log-item">
+                        <div class="log-date">${log.date}</div>
+                        <div style="white-space: pre-wrap;">${log.content}</div>
+                        ${log.comment ? `<div class="teacher-comment-box">👩‍🏫 선생님: ${log.comment}</div>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        function loadAllLogsForTeacher() {
+            const logs = DB.getGrowthLogs();
+            const container = document.getElementById('all-logs-container');
+            container.innerHTML = logs.length ? '' : '<p>아직 등록된 글이 없습니다.</p>';
+
+            logs.forEach(log => {
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `
+                    <div class="log-date">[${log.date}] <span class="log-author">${log.name}</span> 학생</div>
+                    <div style="white-space: pre-wrap; margin-bottom: 10px;">${log.content}</div>
+                    
+                    <div style="border-top: 1px dashed #ccc; padding-top: 10px;">
+                        <textarea id="comment-${log.id}" style="width:100%; height: 60px; margin-bottom:5px;" placeholder="코멘트 입력">${log.comment || ''}</textarea>
+                        <button class="action-btn" style="font-size: 0.9rem; padding: 5px 15px;" onclick="saveComment(${log.id})">코멘트 저장</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function saveComment(id) {
+            const logs = DB.getGrowthLogs();
+            const logIndex = logs.findIndex(l => l.id === id);
+            if (logIndex > -1) {
+                const input = document.getElementById(`comment-${id}`);
+                logs[logIndex].comment = input.value;
+                DB.saveGrowthLogs(logs);
+                alert("코멘트가 저장되었습니다.");
+            }
+        }
+
+    </script>
+</body>
+</html>
