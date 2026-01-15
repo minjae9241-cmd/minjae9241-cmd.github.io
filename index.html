@@ -424,6 +424,7 @@
             <div class="tab-menu">
                 <button class="tab-btn active-tab" onclick="openTab('tab-students')">👨‍🎓 학생 명단</button>
                 <button class="tab-btn" onclick="openTab('tab-seats')">🪑 자리 배치</button>
+                <button class="tab-btn" onclick="openTab('tab-roles')">🧹 1인 1역</button>
             </div>
 
             <!-- 탭 1: 학생 명단 -->
@@ -445,6 +446,18 @@
                 </div>
                 <div id="seat-container" class="seat-grid">
                     <!-- 자리 배치 렌더링 -->
+                </div>
+            </div>
+
+            <!-- 탭 3: 1인 1역 -->
+            <div id="tab-roles" class="tab-content">
+                <div style="margin-bottom: 20px;">
+                    <button class="action-btn" onclick="assignRoles()">🎲 랜덤 배정하기</button>
+                    <button class="action-btn" style="background-color: #FF5722; color: white; margin-left: 10px;"
+                        onclick="resetRoles()">🔄 초기화</button>
+                </div>
+                <div id="role-list" class="grid-2">
+                    <!-- 역할 리스트 렌더링 -->
                 </div>
             </div>
         </div>
@@ -504,6 +517,10 @@
             // 자리 배치
             getSeats: () => JSON.parse(localStorage.getItem('seats') || '[]'),
             saveSeats: (list) => localStorage.setItem('seats', JSON.stringify(list)),
+
+            // 1인 1역
+            getRoles: () => JSON.parse(localStorage.getItem('roles') || '{}'),
+            saveRoles: (roles) => localStorage.setItem('roles', JSON.stringify(roles)),
 
             // 성장 일지 ({id, date, name, content, comment, timestamp})
             getGrowthLogs: () => JSON.parse(localStorage.getItem('growth_logs') || '[]'),
@@ -569,6 +586,7 @@
             } else if (pageName === 'management') {
                 loadStudents();
                 loadSeats();
+                loadRoles(); // 1인 1역 로드 추가
             }
         }
 
@@ -697,6 +715,90 @@
             DB.saveSeats(shuffled);
             loadSeats();
             alert("자리가 섞였습니다!");
+        }
+
+        // --- 기능: 1인 1역 ---
+        const DEFAULT_ROLES = [
+            "반장", "부반장", "줄 반장", "급식 도우미", "우유 도우미",
+            "칠판 지우개", "창문 당번", "불 끄기/켜기", "컴퓨터 관리", "교실 청소 대장",
+            "복도 통행 지도", "준비물 검사", "숙제 걷기", "알림장 쓰기 도움", "책장 정리",
+            "분리수거", "화분 물 주기", "체육 부장", "도서 부장", "보건 부장"
+        ];
+
+        function loadRoles() {
+            const savedRoles = DB.getRoles();
+            const container = document.getElementById('role-list');
+            container.innerHTML = '';
+
+            // 기본 역할에 저장된 학생 매핑
+            DEFAULT_ROLES.forEach((role, index) => {
+                const studentName = savedRoles[role] || "미배정";
+                const isAssigned = savedRoles[role] ? 'assigned' : '';
+
+                const item = document.createElement('div');
+                item.className = 'list-item'; // 재사용
+                item.style.flexDirection = 'column';
+                item.style.gap = '5px';
+
+                item.innerHTML = `
+                    <div style="font-weight: bold; font-size: 1.1rem; color: #5D4037;">${role}</div>
+                    <div style="font-size: 1.2rem; color: #1E88E5; cursor: pointer;" onclick="updateRole('${role}')">
+                        ${studentName}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateRole(role) {
+            const savedRoles = DB.getRoles();
+            const current = savedRoles[role] || "";
+            const newName = prompt(`'${role}' 역할을 맡을 학생의 이름을 입력하세요.\n(현재: ${current})`, current);
+
+            if (newName !== null) {
+                if (newName.trim() === "") {
+                    delete savedRoles[role];
+                } else {
+                    savedRoles[role] = newName.trim();
+                }
+                DB.saveRoles(savedRoles);
+                loadRoles();
+            }
+        }
+
+        function assignRoles() {
+            const students = DB.getStudents();
+            if (students.length === 0) return alert("학생 명단을 먼저 등록해주세요!");
+
+            if (!confirm("현재 배정을 초기화하고 무작위로 새로 배정하시겠습니까?")) return;
+
+            // 학생 섞기
+            const shuffledStudents = [...students];
+            for (let i = shuffledStudents.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledStudents[i], shuffledStudents[j]] = [shuffledStudents[j], shuffledStudents[i]];
+            }
+
+            // 역할에 순서대로 배정 (학생 수가 역할 수보다 적거나 많을 수 있음)
+            const newRoles = {};
+            DEFAULT_ROLES.forEach((role, index) => {
+                if (index < shuffledStudents.length) {
+                    newRoles[role] = shuffledStudents[index];
+                } else {
+                    // 학생 수가 모자라면 미배정으로 남김 (또는 로테이션 로직 가능하나 일단 비움)
+                }
+            });
+
+            DB.saveRoles(newRoles);
+            loadRoles();
+            alert("역할이 배정되었습니다!");
+        }
+
+        function resetRoles() {
+            if (confirm("정말로 모든 역할 배정을 초기화하시겠습니까?")) {
+                DB.saveRoles({});
+                loadRoles();
+            }
         }
 
         // --- 기능: 성장 일지 ---
