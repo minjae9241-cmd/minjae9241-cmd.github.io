@@ -282,9 +282,18 @@
         /* 자리 배치 그리드 */
         .seat-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            /* 3분단 */
+            gap: 40px;
+            /* 분단 간 간격 넓게 */
             margin-top: 20px;
+        }
+
+        .seat-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* 2명씩 (짝꿍) */
+            gap: 10px;
         }
 
         .seat-item {
@@ -294,6 +303,11 @@
             text-align: center;
             border: 1px solid #90caf9;
             font-weight: bold;
+            min-height: 80px;
+            /* 높이 고정으로 깔끔하게 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* 성장 일지 */
@@ -689,16 +703,35 @@
             container.innerHTML = '';
 
             if (seats.length === 0) {
-                container.innerHTML = '<div style="grid-column: span 6; text-align:center; color:#999;">아직 자리 배치가 되지 않았습니다.</div>';
+                container.innerHTML = '<div style="grid-column: span 3; text-align:center; color:#999;">아직 자리 배치가 되지 않았습니다.</div>';
                 return;
             }
 
-            seats.forEach(name => {
-                const div = document.createElement('div');
-                div.className = 'seat-item';
-                div.innerText = name;
-                container.appendChild(div);
-            });
+            // 2명씩 짝지어서 3분단으로 배치 (총 3개의 큰 컬럼)
+            // seats 배열을 앞에서부터 2개씩 묶어서 seat-group으로 만듦
+            for (let i = 0; i < seats.length; i += 2) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'seat-group';
+
+                // 첫 번째 자리
+                const seat1 = document.createElement('div');
+                seat1.className = 'seat-item';
+                seat1.innerText = seats[i];
+                groupDiv.appendChild(seat1);
+
+                // 두 번째 자리 (있으면)
+                if (i + 1 < seats.length) {
+                    const seat2 = document.createElement('div');
+                    seat2.className = 'seat-item';
+                    seat2.innerText = seats[i + 1];
+                    groupDiv.appendChild(seat2);
+                } else {
+                    // 홀수라서 짝이 없는 경우 빈 박스? 아니면 그냥 비움.
+                    // 모양 유지를 위해 빈 투명 박스 추가 가능하나, 일단 비워둠.
+                }
+
+                container.appendChild(groupDiv);
+            }
         }
 
         function shuffleSeats() {
