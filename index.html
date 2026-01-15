@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,8 @@
 
         body {
             font-family: 'Jua', sans-serif;
-            background-color: #FFFDE7; /* 귀여운 노랑 */
+            background-color: #FFFDE7;
+            /* 귀여운 노랑 */
             color: #5D4037;
             padding: 20px;
         }
@@ -105,13 +107,16 @@
             margin-bottom: 20px;
             box-shadow: 2px 2px 0 #F9A825;
         }
-        
+
         .nav-btn:hover {
             background-color: #FFF9C4;
         }
 
         /* 입력 폼 스타일 */
-        input[type="text"], input[type="date"], textarea, select {
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
@@ -121,8 +126,9 @@
             font-size: 1rem;
             background-color: #FFFFFF;
         }
-        
-        input:focus, textarea:focus {
+
+        input:focus,
+        textarea:focus {
             outline: none;
             border-color: #F57F17;
         }
@@ -135,7 +141,7 @@
             font-size: 1.1rem;
             box-shadow: 2px 2px 0 #F57F17;
         }
-        
+
         button.action-btn:hover {
             background-color: #F9A825;
             color: #fff;
@@ -152,13 +158,19 @@
 
         /* --- 페이지별 스타일 --- */
         .page {
-            display: none; /* 기본적으로 숨김 */
+            display: none;
+            /* 기본적으로 숨김 */
             animation: fadeIn 0.3s;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .active {
@@ -171,7 +183,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+
         .grid-4 {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -179,7 +191,9 @@
         }
 
         @media (max-width: 768px) {
-            .grid-4 { grid-template-columns: 1fr 1fr; }
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .info-card {
@@ -188,13 +202,25 @@
             border-radius: 10px;
             border-left: 5px solid;
             min-height: 150px;
-            white-space: pre-wrap; /* 줄바꿈 적용 */
+            white-space: pre-wrap;
+            /* 줄바꿈 적용 */
         }
 
-        .card-red { border-left-color: #ff4b4b; }
-        .card-green { border-left-color: #4caf50; }
-        .card-orange { border-left-color: #ff9800; }
-        .card-blue { border-left-color: #2196f3; }
+        .card-red {
+            border-left-color: #ff4b4b;
+        }
+
+        .card-green {
+            border-left-color: #4caf50;
+        }
+
+        .card-orange {
+            border-left-color: #ff9800;
+        }
+
+        .card-blue {
+            border-left-color: #2196f3;
+        }
 
         .info-title {
             font-weight: bold;
@@ -209,7 +235,7 @@
             border-bottom: 3px solid #ddd;
             margin-bottom: 20px;
         }
-        
+
         .tab-btn {
             padding: 10px 20px;
             background: none;
@@ -218,7 +244,7 @@
             border-bottom: 3px solid transparent;
             margin-bottom: -3px;
         }
-        
+
         .tab-btn.active-tab {
             color: #5D4037;
             border-bottom-color: #FBC02D;
@@ -228,7 +254,7 @@
         .tab-content {
             display: none;
         }
-        
+
         .tab-content.active-content {
             display: block;
         }
@@ -270,18 +296,18 @@
             padding: 15px;
             margin-bottom: 15px;
         }
-        
+
         .log-date {
             font-size: 0.9rem;
             color: #666;
             margin-bottom: 5px;
         }
-        
+
         .log-author {
             font-weight: bold;
             color: #3E2723;
         }
-        
+
         .teacher-comment-box {
             background-color: #E8F5E9;
             padding: 10px;
@@ -289,15 +315,15 @@
             margin-top: 10px;
             border-left: 4px solid #4CAF50;
         }
-
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <!-- 헤더 / 타이틀 -->
         <h1 id="main-title">🍠 군고구마반의 행복한 하루하루 🍠</h1>
-        
+
         <!-- 네비게이션 (홈에서는 숨김) -->
         <div id="navigation" style="display:none;">
             <button class="nav-btn" onclick="goHome()">🏠 홈으로 가기</button>
@@ -320,19 +346,38 @@
                     <div class="home-btn-desc">하루 기록, 선생님 응원</div>
                 </button>
             </div>
+
+            <!-- 데이터 백업/복원 섹션 -->
+            <div
+                style="margin-top: 50px; text-align: center; padding: 20px; background-color: #FFF9C4; border-radius: 20px; border: 3px dashed #FBC02D;">
+                <h3 style="color: #5D4037; margin-bottom: 15px;">💾 데이터 관리 (백업/복원)</h3>
+                <p style="margin-bottom: 15px; font-size: 0.9rem; color: #795548;">데이터를 컴퓨터에 저장하거나, 저장된 파일을 불러올 수 있어요.
+                </p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="action-btn" style="background-color: #4CAF50; color: white;"
+                        onclick="exportData()">📤 데이터 저장하기 (내보내기)</button>
+                    <button class="action-btn" style="background-color: #2196F3; color: white;"
+                        onclick="document.getElementById('import-file').click()">📥 데이터 불러오기 (가져오기)</button>
+                    <input type="file" id="import-file" accept=".json" style="display: none;"
+                        onchange="importData(event)">
+                </div>
+            </div>
         </div>
 
         <!-- 2. 오늘의 우리반 화면 -->
         <div id="page-today" class="page">
             <h2>🏫 오늘의 우리반</h2>
-            
+
             <div style="margin-bottom: 20px; text-align: center;">
                 <label style="font-size: 1.2rem; margin-right: 10px;">📅 날짜 선택:</label>
                 <input type="date" id="daily-date-picker" style="width: auto;" onchange="loadDailyLog()">
             </div>
 
-            <details open style="margin-bottom: 30px; background-color: #fff; padding: 20px; border-radius: 15px; border: 2px solid #FBC02D;">
-                <summary style="font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #F57F17; margin-bottom: 10px;">📝 선생님 기록장 (클릭하여 열기/접기)</summary>
+            <details open
+                style="margin-bottom: 30px; background-color: #fff; padding: 20px; border-radius: 15px; border: 2px solid #FBC02D;">
+                <summary
+                    style="font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #F57F17; margin-bottom: 10px;">
+                    📝 선생님 기록장 (클릭하여 열기/접기)</summary>
                 <div class="grid-2">
                     <div>
                         <label>🕒 학급 일과</label>
@@ -367,7 +412,7 @@
         <!-- 3. 이 달의 우리반 화면 -->
         <div id="page-management" class="page">
             <h2>📋 이 달의 우리반</h2>
-            
+
             <div class="tab-menu">
                 <button class="tab-btn active-tab" onclick="openTab('tab-students')">👨‍🎓 학생 명단</button>
                 <button class="tab-btn" onclick="openTab('tab-seats')">🪑 자리 배치</button>
@@ -420,7 +465,8 @@
                 <div style="margin-top: 40px;">
                     <h3>📂 내가 쓴 글 확인</h3>
                     <div style="display:flex; gap:10px;">
-                        <input type="text" id="growth-search-name" placeholder="이름 입력 후 조회" style="margin-bottom:0; width: 200px;">
+                        <input type="text" id="growth-search-name" placeholder="이름 입력 후 조회"
+                            style="margin-bottom:0; width: 200px;">
                         <button class="action-btn" onclick="loadStudentLogs()">조회</button>
                     </div>
                     <div id="my-logs-container" style="margin-top: 15px;"></div>
@@ -442,11 +488,11 @@
             // 일일 기록
             getDailyLog: (date) => JSON.parse(localStorage.getItem(`daily_${date}`) || 'null'),
             saveDailyLog: (date, data) => localStorage.setItem(`daily_${date}`, JSON.stringify(data)),
-            
+
             // 학생 명단 (단순 배열)
             getStudents: () => JSON.parse(localStorage.getItem('students') || '[]'),
             saveStudents: (list) => localStorage.setItem('students', JSON.stringify(list)),
-            
+
             // 자리 배치
             getSeats: () => JSON.parse(localStorage.getItem('seats') || '[]'),
             saveSeats: (list) => localStorage.setItem('seats', JSON.stringify(list)),
@@ -455,6 +501,45 @@
             getGrowthLogs: () => JSON.parse(localStorage.getItem('growth_logs') || '[]'),
             saveGrowthLogs: (logs) => localStorage.setItem('growth_logs', JSON.stringify(logs))
         };
+
+        // --- 데이터 백업 및 복원 ---
+        function exportData() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                data[key] = localStorage.getItem(key);
+            }
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `class_data_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (confirm("현재 데이터를 모두 지우고 백업 파일로 덮어쓰시겠습니까?")) {
+                        localStorage.clear();
+                        for (const key in data) {
+                            localStorage.setItem(key, data[key]);
+                        }
+                        alert("데이터가 성공적으로 복원되었습니다.");
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert("잘못된 파일 형식이거나 손상된 파일입니다.");
+                }
+            };
+            reader.readAsText(file);
+        }
 
         // --- 네비게이션 ---
         function goHome() {
@@ -470,7 +555,7 @@
             document.getElementById('navigation').style.display = 'block';
 
             // 페이지별 초기화 로직
-            if(pageName === 'today') {
+            if (pageName === 'today') {
                 document.getElementById('daily-date-picker').valueAsDate = new Date();
                 loadDailyLog();
             } else if (pageName === 'management') {
@@ -485,7 +570,7 @@
             const data = DB.getDailyLog(date);
             const container = document.getElementById('daily-cards');
             const title = document.getElementById('daily-display-title');
-            
+
             // 입력창 채우기
             document.getElementById('input-schedule').value = data ? data.schedule : "";
             document.getElementById('input-lunch').value = data ? data.lunch : "";
@@ -494,7 +579,7 @@
 
             // 디스플레이 영역 업데이트
             title.innerText = `📅 ${date} 알림장`;
-            
+
             if (data) {
                 container.innerHTML = `
                     <div class="info-card card-red"><span class="info-title">🕒 학급 일과</span>${formatText(data.schedule)}</div>
@@ -517,7 +602,7 @@
                 todo: document.getElementById('input-todo').value,
                 supplies: document.getElementById('input-supplies').value
             };
-            
+
             DB.saveDailyLog(date, data);
             alert("저장되었습니다!");
             loadDailyLog();
@@ -531,7 +616,7 @@
         function openTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
-            
+
             document.getElementById(tabId).classList.add('active-content');
             event.target.classList.add('active-tab');
         }
@@ -540,7 +625,7 @@
             const list = DB.getStudents();
             const container = document.getElementById('student-list');
             container.innerHTML = list.length === 0 ? '<p style="text-align:center; color:#999;">등록된 학생이 없습니다.</p>' : '';
-            
+
             list.forEach((name, index) => {
                 const item = document.createElement('div');
                 item.className = 'list-item';
@@ -555,8 +640,8 @@
         function addStudent() {
             const input = document.getElementById('new-student-name');
             const name = input.value.trim();
-            if(!name) return;
-            
+            if (!name) return;
+
             const list = DB.getStudents();
             list.push(name);
             DB.saveStudents(list);
@@ -565,7 +650,7 @@
         }
 
         function deleteStudent(index) {
-            if(!confirm("삭제하시겠습니까?")) return;
+            if (!confirm("삭제하시겠습니까?")) return;
             const list = DB.getStudents();
             list.splice(index, 1);
             DB.saveStudents(list);
@@ -576,7 +661,7 @@
             const seats = DB.getSeats();
             const container = document.getElementById('seat-container');
             container.innerHTML = '';
-            
+
             if (seats.length === 0) {
                 container.innerHTML = '<div style="grid-column: span 6; text-align:center; color:#999;">아직 자리 배치가 되지 않았습니다.</div>';
                 return;
@@ -593,14 +678,14 @@
         function shuffleSeats() {
             const students = DB.getStudents();
             if (students.length === 0) return alert("학생 명단을 먼저 등록해주세요!");
-            
+
             // 배열 섞기 (Fisher-Yates shuffle)
             const shuffled = [...students];
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            
+
             DB.saveSeats(shuffled);
             loadSeats();
             alert("자리가 섞였습니다!");
@@ -612,12 +697,12 @@
             if (mode === 'student') {
                 document.getElementById('growth-student-mode').style.display = 'block';
                 document.getElementById('growth-teacher-mode').style.display = 'none';
-                
+
                 // 학생 이름 기억하기 불러오기
                 const savedName = localStorage.getItem('last_student_name');
-                if(savedName) document.getElementById('growth-student-name').value = savedName;
+                if (savedName) document.getElementById('growth-student-name').value = savedName;
                 document.getElementById('growth-search-name').value = savedName || '';
-                
+
             } else {
                 document.getElementById('growth-student-mode').style.display = 'none';
                 document.getElementById('growth-teacher-mode').style.display = 'block';
@@ -628,7 +713,7 @@
         function addGrowthLog() {
             const name = document.getElementById('growth-student-name').value.trim();
             const content = document.getElementById('growth-content').value.trim();
-            
+
             if (!name || !content) return alert("이름과 내용을 모두 입력해주세요.");
 
             const logs = DB.getGrowthLogs();
@@ -639,28 +724,28 @@
                 content: content,
                 comment: ""
             };
-            
+
             logs.unshift(newLog); // 최신순
             DB.saveGrowthLogs(logs);
-            
+
             // 이름 기억
             localStorage.setItem('last_student_name', name);
             document.getElementById('growth-content').value = '';
             alert("저장되었습니다!");
-            
+
             // 바로 내 글 조회 갱신
             document.getElementById('growth-search-name').value = name;
             loadStudentLogs();
         }
 
         function loadStudentLogs() {
-            const name = document.getElementById('growth-search-name').value.trim();
-            if(!name) return alert("이름을 입력해주세요.");
-            
+            const name = document.getElementById('growth-student-name').value.trim() || document.getElementById('growth-search-name').value.trim();
+            if (!name) return alert("이름을 입력해주세요.");
+
             const logs = DB.getGrowthLogs().filter(log => log.name === name);
             const container = document.getElementById('my-logs-container');
             container.innerHTML = logs.length ? '' : '<p>작성된 기록이 없습니다.</p>';
-            
+
             logs.forEach(log => {
                 container.innerHTML += `
                     <div class="log-item">
@@ -706,4 +791,5 @@
 
     </script>
 </body>
+
 </html>
